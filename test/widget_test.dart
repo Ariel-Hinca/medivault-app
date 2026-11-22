@@ -7,5 +7,6 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: MediVaultApp()));
 
     expect(find.text('MediVault'), findsOneWidget);
+    expect(find.text('Scan a pack'), findsOneWidget);
   });
 }

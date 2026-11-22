@@ -8,8 +8,9 @@ void main() {
 
     logger.event('database_erased');
     logger.event('Dafalgan');
+    logger.event('scan_failed');
     logger.event('database_open_failed EXP 04/2028');
 
-    expect(seen, ['database_erased']);
+    expect(seen, ['database_erased', 'scan_failed']);
   });
 }

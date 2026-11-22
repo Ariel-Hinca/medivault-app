@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 /// Logs event codes only. Medicine data, keys, and OCR text are never accepted.
 final class SafeLogger {
   SafeLogger({this.sink});
@@ -5,6 +7,8 @@ final class SafeLogger {
   static const allowed = <String>{
     'database_open_failed',
     'database_erased',
+    'scan_failed',
+    'photo_not_deleted',
   };
 
   final void Function(String code)? sink;
@@ -16,3 +20,5 @@ final class SafeLogger {
     sink?.call(code);
   }
 }
+
+final safeLoggerProvider = Provider<SafeLogger>((ref) => SafeLogger());

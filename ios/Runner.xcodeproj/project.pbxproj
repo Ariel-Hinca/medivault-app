@@ -157,6 +157,7 @@
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
+				B7E4A91C2F6D4A1100C81A02 /* Copy Latin OCR resources */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 			);
 			buildRules = (
@@ -235,6 +236,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		B7E4A91C2F6D4A1100C81A02 /* Copy Latin OCR resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Latin OCR resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "SRC1=\"${SRCROOT}/Flutter/ephemeral/.symlinks/plugins/google_mlkit_text_recognition/ios/google_mlkit_text_recognition/Sources/google_mlkit_text_recognition/LatinOCRResources.bundle\"\nSRC2=\"${SRCROOT}/.symlinks/plugins/google_mlkit_text_recognition/ios/google_mlkit_text_recognition/Sources/google_mlkit_text_recognition/LatinOCRResources.bundle\"\nif [ -d \"$SRC1\" ]; then\n  BUNDLE_SRC=\"$SRC1\"\nelif [ -d \"$SRC2\" ]; then\n  BUNDLE_SRC=\"$SRC2\"\nelse\n  echo \"error: Latin OCR resources are missing. Run flutter pub get, then build again.\"\n  exit 1\nfi\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/LatinOCRResources.bundle\"\nrm -rf \"$DEST\"\ncp -R \"$BUNDLE_SRC\" \"$DEST\"\n";
+		};
 		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -382,6 +397,11 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = be.medivault.medivault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -564,6 +584,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = be.medivault.medivault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -585,6 +610,11 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = be.medivault.medivault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
