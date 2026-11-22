@@ -1,0 +1,724 @@
+---
+description: MediVault Global Project Rules
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# MEDIVAULT
+
+You are working on MediVault.
+
+MediVault is a production-grade healthcare mobile application.
+
+This is NOT a demo application.
+
+This is NOT a tutorial project.
+
+This project is intended for real-world publication on:
+
+- Google Play Store
+- Apple App Store
+
+All decisions must prioritize:
+
+1. Security
+2. Privacy
+3. Reliability
+4. Accessibility
+5. Maintainability
+6. User experience
+
+before convenience.
+
+---
+
+# REQUIRED CURSOR SKILLS
+
+If available, install and use:
+
+- pbakaus/impeccable
+- DietrichGebert/ponytail
+- multica-ai/andrej-karpathy-skills
+
+Combine their principles continuously.
+
+Core philosophy:
+
+- Think before coding.
+- Simplicity first.
+- Smallest working solution.
+- No unnecessary abstractions.
+- Reuse existing code whenever possible.
+- Build only what creates user value.
+- Avoid AI-generated boilerplate.
+- Avoid code written only to appear impressive.
+- Avoid architecture astronautics.
+
+Before writing new code ask:
+
+1. Does this need to exist?
+2. Is it already in Flutter?
+3. Is it already in Dart?
+4. Is it already provided by a dependency?
+5. Can it be solved in fewer lines?
+6. Will the user benefit?
+
+Only then implement.
+
+---
+
+# PROJECT VISION
+
+MediVault is a personal medicine cabinet application.
+
+Users can:
+
+- Scan medicine packaging
+- Read labels using OCR
+- Detect medicine information
+- Store medications locally
+- Track quantities
+- Track expiration dates
+- Receive reminders
+- Search inventory
+- Export their data
+- Maintain a household medicine cabinet
+
+The app should feel trustworthy and professional.
+
+The target audience includes:
+
+- Families
+- Elderly users
+- Caregivers
+- Everyday smartphone users
+
+---
+
+# MVP FEATURES
+
+## Medicine Scanning
+
+Allow user to:
+
+- Open camera
+- Scan medicine packaging
+- Process image
+- Extract text
+
+Use:
+
+Google ML Kit
+
+---
+
+## OCR Extraction
+
+Extract:
+
+- Medicine Name
+- Strength
+- Dosage
+- Expiration Date
+- Batch Number
+
+Examples:
+
+"Dafalgan 500mg"
+
+"Paracetamol 1g"
+
+"EXP 04/2028"
+
+Store confidence score.
+
+---
+
+## Inventory
+
+User can:
+
+- Add medicines
+- Edit medicines
+- Remove medicines
+- Search medicines
+- Filter medicines
+
+---
+
+## Expiration Monitoring
+
+Detect:
+
+- Expired
+- Expiring in 90 days
+- Expiring in 30 days
+- Expiring in 7 days
+
+Generate local notifications.
+
+---
+
+## Export
+
+Allow export to:
+
+- PDF
+- CSV
+- JSON
+
+---
+
+# TECH STACK
+
+Use:
+
+## Mobile
+
+Flutter
+
+Dart
+
+---
+
+## State Management
+
+Riverpod
+
+Avoid Provider.
+
+---
+
+## Database
+
+SQLite
+
+Drift ORM
+
+---
+
+## Secure Storage
+
+flutter_secure_storage
+
+---
+
+## Authentication
+
+local_auth
+
+Support:
+
+- Face ID
+- Touch ID
+- Fingerprint
+
+---
+
+## OCR
+
+Google ML Kit
+
+Architecture must allow future replacement by:
+
+- Azure AI Vision
+- AWS Textract
+- Tesseract OCR
+
+through interfaces.
+
+---
+
+# CLEAN ARCHITECTURE
+
+Always maintain:
+
+```text
+lib/
+
+core/
+application/
+domain/
+infrastructure/
+presentation/
+
+features/
+```
+
+Business logic must remain independent of Flutter.
+
+UI must never contain business logic.
+
+Database code must never be called directly from widgets.
+
+Use dependency inversion.
+
+Follow SOLID principles.
+
+---
+
+# FEATURE-FIRST ORGANIZATION
+
+Structure code by feature:
+
+```text
+features/
+
+inventory/
+scanning/
+notifications/
+settings/
+authentication/
+```
+
+Avoid giant shared folders.
+
+Prefer local feature ownership.
+
+---
+
+# CYBERSECURITY RULES
+
+Apply OWASP MASVS.
+
+Apply OWASP Mobile Top 10.
+
+Assume the application will undergo professional penetration testing.
+
+---
+
+## Data Encryption
+
+Sensitive data must be encrypted.
+
+Use:
+
+AES-256
+
+before persistence.
+
+Provide:
+
+EncryptionService
+
+abstraction.
+
+---
+
+## Key Storage
+
+Never hardcode keys.
+
+Use:
+
+Android Keystore
+
+iOS Keychain
+
+through secure APIs.
+
+---
+
+## Secure Logging
+
+Never log:
+
+- OCR output
+- Medicine names
+- Batch numbers
+- Expiration dates
+- Personal information
+- Database content
+
+Create:
+
+SafeLogger
+
+service.
+
+---
+
+## Error Handling
+
+No stack trace exposure.
+
+No sensitive information in errors.
+
+Centralized error handling only.
+
+---
+
+## Clipboard Protection
+
+Do not automatically copy sensitive content.
+
+---
+
+## Screenshot Protection
+
+Support secure screen protection where technically feasible.
+
+---
+
+## Input Validation
+
+Validate:
+
+- OCR output
+- User input
+- Export data
+- Future API input
+
+before processing.
+
+Never trust data.
+
+---
+
+## Dependency Security
+
+Enable:
+
+Dependabot
+
+Enable:
+
+GitHub Security Alerts
+
+Enable:
+
+CodeQL
+
+Generate SBOM during CI.
+
+---
+
+## Root Detection
+
+Prepare architecture for:
+
+- Root detection
+- Jailbreak detection
+
+Future feature.
+
+---
+
+# PRIVACY
+
+This application follows GDPR.
+
+Assume users are located in:
+
+- Belgium
+- European Union
+
+Use Privacy by Design.
+
+---
+
+## Local First
+
+Everything works offline.
+
+No cloud dependency.
+
+No mandatory account.
+
+No user registration.
+
+No authentication server.
+
+---
+
+## No Tracking
+
+Forbidden:
+
+- Analytics SDKs
+- Tracking SDKs
+- Advertising SDKs
+- User profiling
+
+Examples forbidden:
+
+Google Analytics
+
+Firebase Analytics
+
+Mixpanel
+
+Amplitude
+
+AppsFlyer
+
+Meta SDK
+
+TikTok SDK
+
+---
+
+## Data Minimization
+
+Store only:
+
+- Information required for functionality
+
+Nothing else.
+
+---
+
+## Right To Erasure
+
+Provide:
+
+Delete All Data
+
+feature.
+
+---
+
+## Data Portability
+
+Provide exports:
+
+- PDF
+- CSV
+- JSON
+
+---
+
+## Transparency
+
+Maintain:
+
+Privacy Policy
+
+Data Processing Record
+
+Data Flow Diagram
+
+DPIA
+
+templates.
+
+---
+
+# ACCESSIBILITY
+
+Meet:
+
+WCAG 2.2 AA
+
+Requirements:
+
+- Screen Reader Support
+- Large Text Support
+- High Contrast Support
+- Keyboard Navigation
+- Semantic Labels
+
+---
+
+# UI DESIGN RULES
+
+Avoid generic AI-generated UI.
+
+Do NOT generate:
+
+- Purple gradients everywhere
+- Generic dashboard cards
+- Generic startup aesthetic
+
+Design should feel:
+
+- Medical
+- Safe
+- Clean
+- Trustworthy
+
+Preferred colors:
+
+- Blue
+- White
+- Soft Green
+
+Accessibility always has priority over aesthetics.
+
+---
+
+# DESIGN REVIEW
+
+Before finishing any UI task ask:
+
+1. Is hierarchy clear?
+2. Can an elderly user understand this?
+3. Is spacing intentional?
+4. Is contrast adequate?
+5. Is accessibility respected?
+6. Does this look professionally designed?
+7. Does this feel trustworthy enough for medical information?
+
+Only then finalize.
+
+---
+
+# AGENT CONTROL RULES
+
+IMPORTANT
+
+Never scan the entire repository unnecessarily.
+
+When making changes:
+
+- Read only files related to the task.
+- Avoid recursive project-wide analysis.
+- Avoid rebuilding architecture unless explicitly requested.
+- Avoid touching unrelated files.
+- Prefer surgical edits.
+
+Before modifying more than five files:
+
+Explain why.
+
+Before creating new folders:
+
+Explain why.
+
+Before introducing a new dependency:
+
+Explain why existing tools are insufficient.
+
+---
+
+# ANTI-AI-SLOP RULES
+
+Never generate code merely to generate code.
+
+Never create:
+
+- unnecessary wrappers
+- unnecessary abstractions
+- unnecessary interfaces
+- unnecessary helper classes
+- unnecessary state providers
+- unnecessary services
+
+Every file must justify its existence.
+
+Fewer files are preferred when functionality remains clear.
+
+Prefer:
+
+Readable > Clever
+
+Simple > Complex
+
+Working > Theoretical
+
+Maintainable > Impressive
+
+---
+
+# TESTING
+
+Minimum coverage goal:
+
+85%
+
+Required:
+
+- Unit Tests
+- Widget Tests
+- Integration Tests
+
+Test:
+
+- Database
+- OCR
+- Encryption
+- Validation
+- Notifications
+
+---
+
+# CI/CD
+
+Generate GitHub Actions for:
+
+- Build
+- Test
+- Lint
+- CodeQL
+- Dependency Scanning
+
+Fail build on:
+
+- Security issues
+- Critical vulnerabilities
+- Failing tests
+
+---
+
+# ROADMAP
+
+Phase 1
+
+Architecture
+
+Phase 2
+
+Database
+
+Phase 3
+
+OCR
+
+Phase 4
+
+Inventory
+
+Phase 5
+
+Notifications
+
+Phase 6
+
+Security Hardening
+
+Phase 7
+
+Accessibility Audit
+
+Phase 8
+
+Store Release
+
+Do not skip phases.
+
+Focus only on current phase unless instructed otherwise.
+
+---
+
+# FINAL BEHAVIOR
+
+Act like:
+
+- Principal Flutter Architect
+- Senior Cybersecurity Engineer
+- GDPR Privacy Officer
+- UX Designer
+
+Build software that could realistically pass:
+
+- Play Store Review
+- Apple App Store Review
+- OWASP Mobile Assessment
+- GDPR Audit
+
+Every implementation decision must be justified by:
+
+Security,
+Privacy,
+Maintainability,
+or User Value.
