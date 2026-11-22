@@ -8,6 +8,9 @@ enum QuantityUnit { tablet, capsule, ml, g, piece, dose, other }
 
 enum ExpirationBand { expired, within7Days, within30Days, within90Days, later }
 
+/// How the cabinet list narrows medicines. Wider windows include the shorter ones.
+enum CabinetFilter { all, expired, next7Days, next30Days, next90Days }
+
 /// A printed strength such as 500 mg. Stored as thousandths of the unit.
 final class Strength {
   const Strength(this.milli, this.unit);
@@ -148,9 +151,7 @@ int? parseMilliUnits(String input) {
   }
   final parts = trimmed.split('.');
   final whole = int.parse(parts[0]);
-  final fraction = parts.length == 1
-      ? 0
-      : int.parse(parts[1].padRight(3, '0'));
+  final fraction = parts.length == 1 ? 0 : int.parse(parts[1].padRight(3, '0'));
   final milli = whole * 1000 + fraction;
   if (milli > _maxMilli) {
     return null;
@@ -192,13 +193,14 @@ ExpirationBand expirationBand(ExpirationDate date, DateTime today) {
 
 List<Medicine> filterMedicines(List<Medicine> medicines, String query) {
   final needle = query.trim().toLowerCase();
-  final sorted = [...medicines]..sort((a, b) {
-    final byName = a.name.toLowerCase().compareTo(b.name.toLowerCase());
-    if (byName != 0) {
-      return byName;
-    }
-    return a.id.compareTo(b.id);
-  });
+  final sorted = [...medicines]
+    ..sort((a, b) {
+      final byName = a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      if (byName != 0) {
+        return byName;
+      }
+      return a.id.compareTo(b.id);
+    });
   if (needle.isEmpty) {
     return sorted;
   }
@@ -206,6 +208,37 @@ List<Medicine> filterMedicines(List<Medicine> medicines, String query) {
     for (final medicine in sorted)
       if (medicine.name.toLowerCase().contains(needle)) medicine,
   ];
+}
+
+List<Medicine> filterCabinet(
+  List<Medicine> medicines, {
+  required String query,
+  required CabinetFilter filter,
+  required DateTime today,
+}) {
+  final named = filterMedicines(medicines, query);
+  if (filter == CabinetFilter.all) {
+    return named;
+  }
+  return [
+    for (final medicine in named)
+      if (_inFilter(expirationBand(medicine.expiration, today), filter))
+        medicine,
+  ];
+}
+
+bool _inFilter(ExpirationBand band, CabinetFilter filter) {
+  return switch (filter) {
+    CabinetFilter.all => true,
+    CabinetFilter.expired => band == ExpirationBand.expired,
+    CabinetFilter.next7Days => band == ExpirationBand.within7Days,
+    CabinetFilter.next30Days =>
+      band == ExpirationBand.within7Days || band == ExpirationBand.within30Days,
+    CabinetFilter.next90Days =>
+      band == ExpirationBand.within7Days ||
+          band == ExpirationBand.within30Days ||
+          band == ExpirationBand.within90Days,
+  };
 }
 
 String _requiredText(String value, int maxLength) {

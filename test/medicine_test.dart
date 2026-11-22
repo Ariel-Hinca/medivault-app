@@ -24,10 +24,7 @@ void main() {
     expect(medicine.batchNumber, 'LOT-4');
     expect(medicine.keptFor, 'Mom');
     expect(medicine.expiration.day, isNull);
-    expect(
-      medicine.expiration.effectiveEndDate(),
-      DateTime(2028, 4, 30),
-    );
+    expect(medicine.expiration.effectiveEndDate(), DateTime(2028, 4, 30));
   });
 
   test('rejects empty names, bad dates, and unsafe batch text', () {
@@ -38,7 +35,13 @@ void main() {
         quantity: const Quantity(0, QuantityUnit.piece),
         updatedAt: DateTime.utc(2026, 11, 22),
       ),
-      throwsA(isA<Failure>().having((failure) => failure.code, 'code', 'invalid_medicine')),
+      throwsA(
+        isA<Failure>().having(
+          (failure) => failure.code,
+          'code',
+          'invalid_medicine',
+        ),
+      ),
     );
     expect(
       () => ExpirationDate.checked(year: 2026, month: 2, day: 29),
@@ -62,35 +65,59 @@ void main() {
 
     final today = DateTime(2026, 11, 22);
     expect(
-      expirationBand(ExpirationDate.checked(year: 2026, month: 11, day: 21), today),
+      expirationBand(
+        ExpirationDate.checked(year: 2026, month: 11, day: 21),
+        today,
+      ),
       ExpirationBand.expired,
     );
     expect(
-      expirationBand(ExpirationDate.checked(year: 2026, month: 11, day: 22), today),
+      expirationBand(
+        ExpirationDate.checked(year: 2026, month: 11, day: 22),
+        today,
+      ),
       ExpirationBand.within7Days,
     );
     expect(
-      expirationBand(ExpirationDate.checked(year: 2026, month: 11, day: 29), today),
+      expirationBand(
+        ExpirationDate.checked(year: 2026, month: 11, day: 29),
+        today,
+      ),
       ExpirationBand.within7Days,
     );
     expect(
-      expirationBand(ExpirationDate.checked(year: 2026, month: 11, day: 30), today),
+      expirationBand(
+        ExpirationDate.checked(year: 2026, month: 11, day: 30),
+        today,
+      ),
       ExpirationBand.within30Days,
     );
     expect(
-      expirationBand(ExpirationDate.checked(year: 2026, month: 12, day: 22), today),
+      expirationBand(
+        ExpirationDate.checked(year: 2026, month: 12, day: 22),
+        today,
+      ),
       ExpirationBand.within30Days,
     );
     expect(
-      expirationBand(ExpirationDate.checked(year: 2026, month: 12, day: 23), today),
+      expirationBand(
+        ExpirationDate.checked(year: 2026, month: 12, day: 23),
+        today,
+      ),
       ExpirationBand.within90Days,
     );
     expect(
-      expirationBand(ExpirationDate.checked(year: 2027, month: 2, day: 20), today),
+      expirationBand(
+        ExpirationDate.checked(year: 2027, month: 2, day: 20),
+        today,
+      ),
       ExpirationBand.within90Days,
     );
     expect(
-      expirationBand(ExpirationDate.checked(year: 2027, month: 2, day: 21), today),
+      expirationBand(
+        ExpirationDate.checked(year: 2027, month: 2, day: 21),
+        today,
+      ),
       ExpirationBand.later,
     );
   });
@@ -115,12 +142,64 @@ void main() {
     expect(first, isNot(second));
     expect(first, matches(RegExp(r'^[0-9a-f-]{36}$')));
   });
+
+  test('search and expiry filters narrow the cabinet', () {
+    final today = DateTime(2026, 11, 22);
+    final medicines = [
+      _dated('Old', ExpirationDate.checked(year: 2026, month: 11, day: 21)),
+      _dated('Soon', ExpirationDate.checked(year: 2026, month: 11, day: 29)),
+      _dated('Month', ExpirationDate.checked(year: 2026, month: 12, day: 22)),
+      _dated('Season', ExpirationDate.checked(year: 2027, month: 2, day: 20)),
+      _dated('Later', ExpirationDate.checked(year: 2027, month: 2, day: 21)),
+    ];
+
+    expect(
+      filterCabinet(
+        medicines,
+        query: 'soon',
+        filter: CabinetFilter.all,
+        today: today,
+      ).map((medicine) => medicine.name),
+      ['Soon'],
+    );
+    expect(
+      filterCabinet(
+        medicines,
+        query: '',
+        filter: CabinetFilter.expired,
+        today: today,
+      ).map((medicine) => medicine.name),
+      ['Old'],
+    );
+    expect(
+      filterCabinet(
+        medicines,
+        query: '',
+        filter: CabinetFilter.next30Days,
+        today: today,
+      ).map((medicine) => medicine.name),
+      ['Month', 'Soon'],
+    );
+    expect(
+      filterCabinet(
+        medicines,
+        query: 'later',
+        filter: CabinetFilter.next90Days,
+        today: today,
+      ),
+      isEmpty,
+    );
+  });
 }
 
 Medicine _medicine(String name) {
+  return _dated(name, ExpirationDate.checked(year: 2028, month: 4));
+}
+
+Medicine _dated(String name, ExpirationDate expiration) {
   return Medicine.create(
     name: name,
-    expiration: ExpirationDate.checked(year: 2028, month: 4),
+    expiration: expiration,
     quantity: const Quantity(1000, QuantityUnit.tablet),
     updatedAt: DateTime.utc(2026, 11, 22),
   );

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:medivault/core/error/failure.dart';
 
@@ -41,10 +42,10 @@ final class EncryptionService {
 
 String generateDatabaseKey(Random random) {
   final bytes = List<int>.generate(32, (_) => random.nextInt(256));
-  return bytes
-      .map((byte) => byte.toRadixString(16).padLeft(2, '0'))
-      .join();
+  return bytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join();
 }
+
+final keyStoreProvider = Provider<KeyStore>((ref) => SecureKeyStore());
 
 /// Keystore on Android and Keychain on iOS. The key never enters the database.
 final class SecureKeyStore implements KeyStore {

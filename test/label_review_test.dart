@@ -8,6 +8,10 @@ void main() {
   testWidgets('shows the reading and asks for a check when unsure', (
     tester,
   ) async {
+    tester.view.physicalSize = const Size(800, 2400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     final reading = readLabel([
       const RecognizedLine('Dafalgan 500mg', confidenceMilli: 900),
       const RecognizedLine('1 tablet', confidenceMilli: 800),
@@ -18,7 +22,11 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: LabelReview(reading: reading, onScanAgain: () {}),
+          body: LabelReview(
+            reading: reading,
+            onScanAgain: () {},
+            onSave: () {},
+          ),
         ),
       ),
     );
@@ -33,19 +41,24 @@ void main() {
     expect(find.text('Not found'), findsNothing);
     await tester.scrollUntilVisible(
       find.text(
-        'This reading stays on this screen. It is not saved in the cabinet.',
+        'Check the details, then save the medicine. The photo is already deleted.',
       ),
       200,
     );
+    expect(find.text('Save in cabinet'), findsOneWidget);
     expect(
       find.text(
-        'This reading stays on this screen. It is not saved in the cabinet.',
+        'Check the details, then save the medicine. The photo is already deleted.',
       ),
       findsOneWidget,
     );
   });
 
   testWidgets('says when a field was not found', (tester) async {
+    tester.view.physicalSize = const Size(800, 2400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -58,6 +71,7 @@ void main() {
               ),
             ),
             onScanAgain: () {},
+            onSave: () {},
           ),
         ),
       ),

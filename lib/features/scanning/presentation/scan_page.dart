@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:medivault/core/logging/safe_logger.dart';
 import 'package:medivault/features/inventory/domain/medicine.dart';
+import 'package:medivault/features/inventory/presentation/medicine_form_page.dart';
 import 'package:medivault/features/scanning/domain/pack_label.dart';
 
 final packTextReaderProvider = Provider<PackTextReader>(
@@ -163,9 +164,23 @@ class _ScanPageState extends ConsumerState<ScanPage> {
           reading: _reading ?? const LabelReading(),
           message: _message,
           onScanAgain: _openCamera,
+          onSave: _saveReading,
         ),
       },
     );
+  }
+
+  Future<void> _saveReading() async {
+    final saved = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (context) => MedicineFormPage(
+          draft: draftFromReading(_reading ?? const LabelReading()),
+        ),
+      ),
+    );
+    if (saved == true && mounted) {
+      Navigator.of(context).pop(true);
+    }
   }
 
   Future<void> _releaseCamera() async {
@@ -318,11 +333,12 @@ class _Status extends StatelessWidget {
   }
 }
 
-/// Shows the extracted fields. The reading is not written to the cabinet.
+/// Shows the extracted fields before they are confirmed into the cabinet.
 class LabelReview extends StatelessWidget {
   const LabelReview({
     required this.reading,
     required this.onScanAgain,
+    required this.onSave,
     this.message,
     super.key,
   });
@@ -330,6 +346,7 @@ class LabelReview extends StatelessWidget {
   final LabelReading reading;
   final String? message;
   final VoidCallback onScanAgain;
+  final VoidCallback onSave;
 
   @override
   Widget build(BuildContext context) {
@@ -379,7 +396,7 @@ class LabelReview extends StatelessWidget {
                 reading.batchNumber?.confidenceMilli,
               ),
               Text(
-                'This reading stays on this screen. It is not saved in the cabinet.',
+                'Check the details, then save the medicine. The photo is already deleted.',
                 style: theme.textTheme.bodyLarge,
               ),
             ],
@@ -387,12 +404,25 @@ class LabelReview extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-          child: FilledButton(
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(56),
-            ),
-            onPressed: onScanAgain,
-            child: const Text('Scan again'),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(56),
+                ),
+                onPressed: onSave,
+                child: const Text('Save in cabinet'),
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(56),
+                ),
+                onPressed: onScanAgain,
+                child: const Text('Scan again'),
+              ),
+            ],
           ),
         ),
       ],

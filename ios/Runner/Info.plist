@@ -8,6 +8,8 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>MediVault</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>MediVault uses Face ID to confirm it is you before opening your medicine cabinet.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>MediVault uses the camera to read the name and expiry date on a medicine pack. The photo is deleted after reading.</string>
 	<key>CFBundleExecutable</key>
