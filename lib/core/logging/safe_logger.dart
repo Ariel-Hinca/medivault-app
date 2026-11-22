@@ -9,6 +9,7 @@ final class SafeLogger {
     'database_erased',
     'scan_failed',
     'photo_not_deleted',
+    'reminders_failed',
   };
 
   final void Function(String code)? sink;

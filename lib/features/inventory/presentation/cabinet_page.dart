@@ -5,6 +5,7 @@ import 'package:medivault/features/inventory/domain/medicine.dart';
 import 'package:medivault/features/inventory/domain/medicine_draft.dart';
 import 'package:medivault/features/inventory/infrastructure/cabinet_providers.dart';
 import 'package:medivault/features/inventory/presentation/medicine_form_page.dart';
+import 'package:medivault/features/notifications/infrastructure/local_reminders.dart';
 import 'package:medivault/features/scanning/presentation/scan_page.dart';
 
 const _check = Color(0xFF6B3E00);
@@ -79,7 +80,7 @@ class _CabinetPageState extends ConsumerState<CabinetPage> {
           message: _openMessage(error),
           onTryAgain: () {
             ref.invalidate(medicineRepositoryProvider);
-            ref.invalidate(cabinetListProvider);
+            _reloadCabinet();
           },
         ),
         data: (medicines) => _CabinetBody(
@@ -112,7 +113,7 @@ class _CabinetPageState extends ConsumerState<CabinetPage> {
       ),
     );
     if (saved == true) {
-      ref.invalidate(cabinetListProvider);
+      _reloadCabinet();
     }
   }
 
@@ -121,8 +122,13 @@ class _CabinetPageState extends ConsumerState<CabinetPage> {
       MaterialPageRoute<bool>(builder: (context) => const ScanPage()),
     );
     if (saved == true) {
-      ref.invalidate(cabinetListProvider);
+      _reloadCabinet();
     }
+  }
+
+  void _reloadCabinet() {
+    ref.invalidate(cabinetListProvider);
+    ref.invalidate(reminderSyncProvider);
   }
 }
 
